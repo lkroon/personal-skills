@@ -69,6 +69,7 @@ After all tasks: dispatch ONE final reviewer over the whole diff, then run the f
 ## Red Flags — never
 
 - Start on main/master without consent.
+- Start before all ambiguities are resolved with the user by verification (unless explicitly stated)
 - Make a sub-agent read the plan file instead of giving it the task text.
 - Skip a review, start quality review before spec is ✅, or move on with open issues.
 - Run conflicting implementers in parallel (same files / dependency).

@@ -81,6 +81,7 @@ Never write: "TBD"/"TODO"/"implement later"; "add appropriate error handling / v
 1. **Spec coverage** — point to a task for each spec requirement; add tasks for any gap.
 2. **Placeholder scan** — search for every red flag above; fix.
 3. **Type consistency** — method/property names defined in early tasks match their use in later tasks (`clearLayers()` in Task 3 vs `clearFullLayers()` in Task 7 is a bug).
+4. **Standards (`development-guidelines`)** — every task has a verifiable check (a test/command that proves it works); no task plans speculative flexibility, single-use abstractions, or code that's bigger than it needs to be.
 
 ## Execution Handoff
 

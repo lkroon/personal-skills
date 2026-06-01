@@ -22,7 +22,10 @@ Read the **full** changed files, not just the hunks — abstraction leaks and AP
 ## Lenses (raise only real issues with specific evidence; clean code with zero findings is valid)
 - **Correctness** — bugs, unhandled edge cases, race conditions, broken behavior.
 - **Tests** — exercise real logic (not asserting on mocks)? Meaningful edge cases covered? Passing?
-- **Simplicity / YAGNI** — single-use abstractions, speculative config/flexibility, code that could be half the size, error handling for impossible cases.
+- **Development standards (hard gate — a violation here is at least Important):**
+  - *Surgical* — every changed line traces directly to the stated change? Flag collateral edits: reformatting, "improving" adjacent code, refactoring what wasn't broken, deleting pre-existing dead code.
+  - *Simplicity / YAGNI* — single-use abstractions, speculative config/flexibility, error handling for impossible cases, code that could be half the size.
+  - *Verifiable* — is there a real check proving it works (a test that would fail without the change), not just "it runs"?
 - **Clarity & design** — naming, separation of concerns, files with one responsibility.
 - **Conventions** — follows the patterns already in this codebase. Skip anything the linter/formatter/type-checker enforces.
 
