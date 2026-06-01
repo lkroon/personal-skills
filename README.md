@@ -1,8 +1,6 @@
 # personal-skills
 
-Condensed, general-purpose skills distilled from third-party skill collections
-(`superpowers`, `obra/skills`, `andrej-karpathy-skills`) and tuned to a single
-end-to-end workflow:
+Condensed, general-purpose skills distilled from third-party skill collections and tuned to a single end-to-end workflow:
 
 ```
 brainstorming ──► writing-plans ──► executing-plans ──► reviewing-code
