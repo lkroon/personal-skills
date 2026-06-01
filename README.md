@@ -8,6 +8,8 @@ brainstorming ──► writing-plans ──► executing-plans ──► review
      └── grill-me (stress-test an existing design/plan) ──────┘
 ```
 
+> **Agents:** skill selection, triggers, preconditions, gates, and the invocation protocol live in [`CLAUDE.md`](./CLAUDE.md) (auto-loaded when working in this repo). This README is the human overview.
+
 ## Skills
 
 | Skill | Use it when | Distilled from |
