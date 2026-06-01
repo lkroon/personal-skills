@@ -17,8 +17,10 @@ brainstorming ──► writing-plans ──► executing-plans ──► review
 | `writing-plans` | You have an approved spec and need a bite-sized, TDD-structured implementation plan. | superpowers:writing-plans |
 | `executing-plans` | You have a plan to implement — fresh sub-agent per task, two-stage review, parallel where independent. | superpowers:executing-plans, subagent-driven-development, dispatching-parallel-agents |
 | `reviewing-code` | Reviewing a diff/branch/PR, or acting on review feedback. | superpowers:requesting/receiving-code-review, obra:review |
+| `karpathy-guidelines` | The coding standard — reference when writing/reviewing code. Not run directly; it's the source the workflow skills enforce. | andrej-karpathy-skills |
 
 ## Conventions baked in
+- **Coding standard:** `karpathy-guidelines` (surgical changes, simplicity/YAGNI, verifiable goals, think-before-coding) is the single source of truth. `writing-plans` checks it in self-review; the `executing-plans` and `reviewing-code` quality reviewers enforce it as a hard gate.
 - **Full rigor:** TDD (test-first), git worktree isolation, commit-per-step, two-stage spec+quality review.
 - **Plans** save to `~/agents/plans/YYYY-MM-DD-<name>.md`; **specs** to `~/agents/specs/YYYY-MM-DD-<topic>-design.md`. Project/user preferences override.
 - **Sub-agents** never inherit session context or read plan files — the coordinator hands them exactly what they need.
