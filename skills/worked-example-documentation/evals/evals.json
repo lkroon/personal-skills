@@ -1,0 +1,23 @@
+{
+  "skill_name": "worked-example-documentation",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Update docs/indexing.md to explain how values are assigned shared region codes from the interval endpoints in fixtures/limits.csv. Readers understand the final code column but not why an exact endpoint gets a different code from the gap beside it. Use four real rows covering a boundary, a gap, a beyond-range value, and a NaN.",
+      "expected_output": "A source-grounded worked example that derives point, gap, out-of-range, and NaN codes; distinguishes location codes from row IDs; and traces the same rows through the final lookup.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Rewrite the compiler design note in docs/ir-lowering.md. It currently jumps from parsed AST to bytecode. Use the existing fixture examples/closures.lang to show symbol allocation, closure capture indexes, lowered IR, and emitted bytecode for one nested function.",
+      "expected_output": "A stable end-to-end example with an evidence ledger, explicit generated-index rules, consistent identifiers across stages, and verified final bytecode.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The pipeline ADR says events are deduplicated and later restored to input order, but never shows how. Expand it using four fixture rows so two deduplicate together, one remains distinct, and one is rejected. Include representative selection, the inverse map, per-representative outcomes, expansion, and the final aggregate.",
+      "expected_output": "A complete trace through projection, uniqueness, representative selection, inverse mapping, evaluation, expansion, and reduction using the same verified records throughout.",
+      "files": []
+    }
+  ]
+}

@@ -1,35 +1,70 @@
 # personal-skills
 
-Condensed, general-purpose skills distilled from third-party skill collections and tuned to a single end-to-end workflow:
+The reviewed, versioned source of OpenCode skills. Clear, local, reversible work uses direct execution by default:
 
-```
-brainstorming ──► writing-plans ──► executing-plans ──► reviewing-code
-     │                                                        ▲
-     └── grill-me (stress-test an existing design/plan) ──────┘
+```text
+inspect relevant context -> edit -> targeted verification -> report
 ```
 
-> **Agents:** skill selection, triggers, preconditions, gates, and the invocation protocol live in [`CLAUDE.md`](./CLAUDE.md) (auto-loaded when working in this repo). This README is the human overview.
+Do not require brainstorming, a specification, a saved plan, a worktree, TDD, subagents, or review for routine work. Escalate when risk is material: architecture or public APIs; security, privacy, authorization, or sensitive data; migrations, destructive behavior, or difficult rollback; cross-system ambiguity; weak verification; unfamiliar technology with a high failure cost; or coordinated multi-stage checkpoints. A multi-file feature or behavior change is not sufficient by itself. If material risk appears during direct execution, stop and escalate then.
 
-## Skills
+## OpenCode Skills
 
-| Skill | Use it when | Distilled from |
-|-------|-------------|----------------|
-| `brainstorming` | A fuzzy idea needs to become an approved design/spec before any code. | superpowers:brainstorming |
-| `grill-me` | You already have a plan/design and want it interrogated and stress-tested. | obra:grill-me, obra:grill-with-docs |
-| `writing-plans` | You have an approved spec and need a bite-sized, TDD-structured implementation plan. | superpowers:writing-plans |
-| `executing-plans` | You have a plan to implement — fresh sub-agent per task, two-stage review, parallel where independent. | superpowers:executing-plans, subagent-driven-development, dispatching-parallel-agents |
-| `reviewing-code` | Reviewing a diff/branch/PR, or acting on review feedback. | superpowers:requesting/receiving-code-review, obra:review |
-| `development-guidelines` | The coding standard — reference when writing/reviewing code. Not run directly; it's the source the workflow skills enforce. | andrej-karpathy-skills |
+The five canonical workflow skills are:
 
-## Conventions baked in
-- **Coding standard:** `development-guidelines` (surgical changes, simplicity/YAGNI, verifiable goals, think-before-coding) is the single source of truth. `writing-plans` checks it in self-review; the `executing-plans` and `reviewing-code` quality reviewers enforce it as a hard gate.
-- **Full rigor:** TDD (test-first), git worktree isolation, commit-per-step, two-stage spec+quality review.
-- **Plans** save to `~/agents/plans/YYYY-MM-DD-<name>.md`; **specs** to `~/agents/specs/YYYY-MM-DD-<topic>-design.md`. Project/user preferences override.
-- **Sub-agents** never inherit session context or read plan files — the coordinator hands them exactly what they need.
+| Skill | Use it when |
+| --- | --- |
+| `formal-design` | A user explicitly requests a design/specification, or consequential uncertainty and material risk must be resolved before implementation. |
+| `formal-planning` | An approved design or materially risky multi-stage change needs dependencies, acceptance checks, and coordinated checkpoints. |
+| `hard-debugging` | A defect is intermittent, performance-related, distributed, high-impact, hard to verify, or unresolved after repeated attempts. |
+| `code-review` | Reviewing a diff, branch, or PR; acting on review feedback; or independently scrutinizing materially risky work before merge. |
+| `skill-development` | Creating, improving, evaluating, consolidating, or retiring skills or choosing a better mechanism. |
+
+Seven reviewed domain skills remain distinct:
+
+| Skill | Use it when |
+| --- | --- |
+| `grill-me` | An existing design, plan, or approach needs one-question-at-a-time stress-testing. |
+| `prototype` | A throwaway runnable experiment or set of UI variants should answer a design question. |
+| `architecture-analysis` | A codebase needs an architecture audit or deepening opportunities for testability and navigability. |
+| `triage` | Issues need classification, workflow management, or preparation for an agent. |
+| `handoff` | Current-session context must be compacted for another agent or later session. |
+| `technical-html-presentations` | Repository evidence must become or update a self-contained technical HTML presentation. |
+| `worked-example-documentation` | Documentation needs a verified end-to-end example through every intermediate representation. |
+
+`opencode-skills.json` is the source of truth for this twelve-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
+
+- `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` to disable `.claude` compatibility discovery.
+- `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` to disable external `.agents` discovery.
+
+These flags prevent legacy or global copies from being rediscovered alongside the manifest and producing duplicate names. Invoking the vendor binary directly or using another integration can bypass the launcher and is unsupported until configured with the same flags and explicit paths.
+
+Legacy personal skill directories are not deleted. They remain available to Claude Code through symlinks in `~/.claude/skills`, while OpenCode loads only manifest entries. Existing `~/.agents/skills` installations are also preserved for non-OpenCode consumers.
+
+## Development
+
+Use `skill-development` before changing this skill system. Static validation is deterministic:
+
+```bash
+python3 tests/validate_skills.py
+```
+
+Run targeted trigger and outcome evaluations for the affected case IDs:
+
+```bash
+python3 tests/evaluate_skills.py --suite trigger --case <case-id>
+python3 tests/evaluate_skills.py --suite outcome --case <case-id>
+```
+
+Whole suites invoke a model and require explicit `--all`.
 
 ## Layout
-```
-skills/<skill-name>/SKILL.md           # required, the skill itself
-skills/<skill-name>/*-prompt.md        # sub-agent dispatch templates (executing-plans, reviewing-code)
-_superseded/                            # earlier project-specific skills kept for reference, not active
+
+```text
+opencode-skills.json                         # active OpenCode inventory
+instructions/opencode-development.md        # always-on OpenCode guidance
+skills/<skill-name>/SKILL.md                 # canonical or preserved legacy skills
+opencode/skills/<skill-name>/SKILL.md        # OpenCode-specific adaptation
+tests/validate_skills.py                     # static validation
+tests/evaluate_skills.py                     # isolated trigger/outcome evaluation
 ```

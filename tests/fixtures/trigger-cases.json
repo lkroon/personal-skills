@@ -1,0 +1,169 @@
+{
+  "require_active_skill_references": true,
+  "require_canonical_coverage": true,
+  "require_outcome_coverage": true,
+  "cases": [
+    {
+      "id": "direct-small-code-change",
+      "prompt": "Change the text of one existing validation error and run its focused test.",
+      "expected_skills": [],
+      "forbidden_skills": ["formal-design", "formal-planning", "hard-debugging"]
+    },
+    {
+      "id": "direct-multifile-mechanical-change",
+      "prompt": "Rename getCwd to getCurrentWorkingDirectory across the repository and run the existing checks.",
+      "expected_skills": [],
+      "forbidden_skills": ["formal-design", "formal-planning", "hard-debugging"]
+    },
+    {
+      "id": "direct-routine-feature-complete-requirements",
+      "prompt": "Add the specified CSV export button to the existing report page. The requirements, API response, UI pattern, and acceptance tests are all provided.",
+      "expected_skills": [],
+      "forbidden_skills": ["formal-design", "formal-planning"]
+    },
+    {
+      "id": "direct-execute-user-plan",
+      "prompt": "Implement the supplied implementation plan exactly as written, verifying each stage. Do not rewrite or replan it.",
+      "expected_skills": [],
+      "forbidden_skills": ["formal-design", "formal-planning"]
+    },
+    {
+      "id": "formal-architecture",
+      "prompt": "Design how two services should share authorization policy without duplicating rules. The public API is not decided yet.",
+      "expected_skills": ["formal-design"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "formal-security",
+      "prompt": "Plan a migration from API keys to short-lived OAuth tokens without locking out existing clients.",
+      "expected_skills": ["formal-design"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "formal-explicit-spec",
+      "prompt": "Write a design specification for an irreversible customer-data deletion workflow, including alternatives and rollback limitations.",
+      "expected_skills": ["formal-design"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "formal-existing-design",
+      "prompt": "The approved architecture is in docs/auth-design.md. Write an implementation plan with dependencies and verification checkpoints.",
+      "expected_skills": ["formal-planning"],
+      "forbidden_skills": ["formal-design"]
+    },
+    {
+      "id": "formal-coordinated-migration-plan",
+      "prompt": "The database migration design is approved. Create a rollout plan coordinating schema changes, dual writes, backfill, monitoring, and rollback checkpoints.",
+      "expected_skills": ["formal-planning"],
+      "forbidden_skills": ["formal-design"]
+    },
+    {
+      "id": "formal-public-api-plan",
+      "prompt": "Turn the approved public API compatibility design into an implementation plan with dependencies, acceptance checks, and rollback notes.",
+      "expected_skills": ["formal-planning"],
+      "forbidden_skills": ["formal-design"]
+    },
+    {
+      "id": "hard-debugging-intermittent",
+      "prompt": "Diagnose an intermittent race that fails one CI run in twenty and has resisted two fixes.",
+      "expected_skills": ["hard-debugging"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "hard-debugging-performance",
+      "prompt": "Investigate a production latency regression that appears only under sustained load; profiling so far has not isolated the cause.",
+      "expected_skills": ["hard-debugging"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "hard-debugging-distributed",
+      "prompt": "Find the root cause of occasional duplicate charges across the checkout service and payment worker after two attempted fixes failed.",
+      "expected_skills": ["hard-debugging"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "direct-obvious-bug",
+      "prompt": "The traceback points to a misspelled dictionary key on this line. Fix it and add a regression test.",
+      "expected_skills": [],
+      "forbidden_skills": ["hard-debugging"]
+    },
+    {
+      "id": "explicit-review",
+      "prompt": "Review the current branch against main and report bugs first with file and line references.",
+      "expected_skills": ["code-review"],
+      "forbidden_skills": [],
+      "project": {
+        "files": {
+          "auth.py": "def delete_allowed(user):\n    return user.is_admin\n"
+        },
+        "git": {
+          "base_branch": "main",
+          "branch": "review",
+          "changes": {
+            "auth.py": "def delete_allowed(user):\n    return bool(user)\n"
+          }
+        }
+      }
+    },
+    {
+      "id": "review-feedback",
+      "prompt": "Check whether this PR feedback is technically correct before applying it.",
+      "expected_skills": ["code-review"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "review-risky-premerge",
+      "prompt": "Before merging this authentication and session migration, review the branch for security, compatibility, and rollback defects.",
+      "expected_skills": ["code-review"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "direct-implementation-self-check",
+      "prompt": "Implement this small null check, inspect your own diff, and run the focused test.",
+      "expected_skills": [],
+      "forbidden_skills": ["code-review"]
+    },
+    {
+      "id": "skill-create-reusable",
+      "prompt": "We repeat the same release-note audit in every repository. Determine whether it deserves a skill and create and evaluate one if justified.",
+      "expected_skills": ["skill-development"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "skill-improve-misfire",
+      "prompt": "The architecture skill keeps triggering on simple refactors. Improve its trigger description and add this failure as a regression case.",
+      "expected_skills": ["skill-development"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "skill-consolidate-overlap",
+      "prompt": "Our debugging skills overlap and produce inconsistent workflows. Evaluate their evidence, consolidate them if justified, and retire redundant entries.",
+      "expected_skills": ["skill-development"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "not-a-skill-one-off",
+      "prompt": "For this task only, keep the final answer under five lines.",
+      "expected_skills": [],
+      "forbidden_skills": ["skill-development"]
+    },
+    {
+      "id": "not-a-skill",
+      "prompt": "Add this repository-specific test command to AGENTS.md.",
+      "expected_skills": [],
+      "forbidden_skills": ["skill-development"]
+    },
+    {
+      "id": "not-a-skill-project-docs",
+      "prompt": "Document this repository's release branch naming convention in the project contributor guide.",
+      "expected_skills": [],
+      "forbidden_skills": ["skill-development"]
+    },
+    {
+      "id": "not-a-skill-deterministic-lint",
+      "prompt": "Add a lint rule that rejects tabs in Python source files and enable it in CI.",
+      "expected_skills": [],
+      "forbidden_skills": ["skill-development"]
+    }
+  ]
+}
