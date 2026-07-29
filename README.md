@@ -58,6 +58,10 @@ python3 tests/evaluate_skills.py --suite outcome --case <case-id>
 
 Whole suites invoke a model and require explicit `--all`.
 
+GitHub Actions runs the unit tests and static validator on every push and pull request. The model-backed suites run only from **Actions > Test skills > Run workflow** with `run_agent_evaluations` enabled.
+
+The default `opencode/big-pickle` evaluation model currently uses OpenCode's public free access, so it needs no token. To select a paid OpenCode Zen model, create an OpenCode Zen API key and add it as a repository or organization Actions secret named `OPENCODE_API_KEY` (or run `gh secret set OPENCODE_API_KEY`). GitHub's automatic `GITHUB_TOKEN` is only a repository automation token; it cannot call a model provider, and the evaluation harness deliberately removes it before launching OpenCode. Local evaluations instead use provider environment variables or credentials already stored by `opencode auth login` in `~/.local/share/opencode/auth.json`.
+
 ## Layout
 
 ```text

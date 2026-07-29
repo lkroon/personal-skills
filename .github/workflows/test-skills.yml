@@ -1,0 +1,77 @@
+name: Test skills
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_agent_evaluations:
+        description: Run model-backed trigger and outcome suites
+        required: true
+        type: boolean
+        default: false
+      model:
+        description: OpenCode Zen model in provider/model form
+        required: true
+        type: string
+        default: opencode/big-pickle
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-skills-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic:
+    name: Deterministic checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Validate skill inventory and fixtures
+        run: python3 tests/validate_skills.py
+
+  agent-evaluations:
+    name: Agent evaluations (${{ matrix.suite }}, ${{ inputs.model }})
+    if: github.event_name == 'workflow_dispatch' && inputs.run_agent_evaluations
+    needs: deterministic
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [trigger, outcome]
+    env:
+      EVALUATION_MODEL: ${{ inputs.model }}
+      EVALUATION_SUITE: ${{ matrix.suite }}
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install OpenCode
+        run: npm install --global opencode-ai@1.18.9
+
+      - name: Run agent evaluation suite
+        run: python3 tests/evaluate_skills.py --suite "$EVALUATION_SUITE" --all --model "$EVALUATION_MODEL"
