@@ -1,0 +1,16 @@
+{
+  "skills": {
+    "architecture-analysis": "skills/architecture-analysis",
+    "code-review": "skills/code-review",
+    "formal-design": "skills/formal-design",
+    "formal-planning": "skills/formal-planning",
+    "grill-me": "opencode/skills/grill-me",
+    "handoff": "skills/handoff",
+    "hard-debugging": "skills/hard-debugging",
+    "prototype": "skills/prototype",
+    "skill-development": "skills/skill-development",
+    "technical-html-presentations": "skills/technical-html-presentations",
+    "triage": "skills/triage",
+    "worked-example-documentation": "skills/worked-example-documentation"
+  }
+}

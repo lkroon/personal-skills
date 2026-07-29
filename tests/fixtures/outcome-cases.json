@@ -1,0 +1,179 @@
+{
+  "cases": [
+    {
+      "id": "formal-design-authorization-options",
+      "skill": "formal-design",
+      "prompt": "No repository or file context exists; use only this request and do not inspect the workspace. Design, but do not implement, how two services should share authorization policy. The public contract is undecided. Compare viable approaches and recommend one, then stop for approval.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(approach|option|alternative|design)", "(?i)(trade-?offs?|advantages?|disadvantages?|pros?\\b|cons?\\b)", "(?i)(recommend|approval|approve)"],
+      "forbidden_text_patterns": ["(?i)implementation (is )?complete"]
+    },
+    {
+      "id": "formal-design-destructive-boundary",
+      "skill": "formal-design",
+      "prompt": "No repository or file context exists; use only this request and do not inspect the workspace. Specify an irreversible customer-data deletion workflow. Address service boundaries, failure behavior, rollback limitations, and verification. Do not create files or implement anything before I approve the design.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(failure|partial)", "(?i)(rollback|irreversible)", "(?i)(verify|verification)"],
+      "forbidden_text_patterns": ["(?i)(implemented|implementation complete)"]
+    },
+    {
+      "id": "formal-design-prevents-premature-edit",
+      "skill": "formal-design",
+      "prompt": "No repository or file context exists; use only this request and do not inspect the workspace. We need a public webhook retry contract, but delivery ordering and compatibility guarantees are unresolved. Explore two or three designs with tradeoffs and ask for approval before any implementation.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(ordering|compatib)", "(?i)(approach|option|alternative|design)", "(?i)(approval|approve)"] ,
+      "forbidden_text_patterns": ["(?i)implementation (is )?complete"]
+    },
+    {
+      "id": "formal-planning-migration-dependencies",
+      "skill": "formal-planning",
+      "prompt": "The zero-downtime schema migration design is approved. Produce an implementation plan covering schema expansion, dual writes, backfill, cutover, and rollback. Include dependencies and acceptance checks. Do not implement it.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)dependenc", "(?i)acceptance (check|criter)", "(?i)rollback"],
+      "forbidden_text_patterns": ["(?i)(must|required to).{0,40}(commit|TDD|subagent)"]
+    },
+    {
+      "id": "formal-planning-public-api-checkpoints",
+      "skill": "formal-planning",
+      "prompt": "Turn the approved public API compatibility design into a dependency-aware rollout plan. Each task must identify files or components, its goal, dependencies, acceptance checks, and relevant rollback risks. Do not execute the plan.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)files?", "(?i)goal", "(?i)dependenc", "(?i)acceptance (check|criter)"],
+      "forbidden_text_patterns": ["(?i)(must|required to).{0,40}(commit|TDD|subagent)"],
+      "project": {
+        "files": {
+          "docs/api-design.md": "# Approved API Compatibility Design\n\nKeep v1 available during a staged v2 rollout. Add the v2 route, publish compatibility tests, migrate clients, monitor errors, and remove v1 only after adoption. Roll back by routing clients to v1.\n",
+          "src/api.py": "def v1_response():\n    return {'version': 1}\n",
+          "tests/test_api.py": "def test_v1_contract():\n    assert True\n"
+        }
+      }
+    },
+    {
+      "id": "formal-planning-prevents-ceremony",
+      "skill": "formal-planning",
+      "prompt": "The cross-service token rotation design is approved. Write a concise coordinated implementation plan with natural task sizes, dependencies, verification checkpoints, and rollback notes. Do not prescribe commits, TDD, or subagents, and do not implement it.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)dependenc", "(?i)(acceptance|verification)", "(?i)rollback"],
+      "forbidden_text_patterns": ["(?i)(must|required to).{0,40}(commit|TDD|subagent)"]
+    },
+    {
+      "id": "hard-debugging-intermittent-evidence",
+      "skill": "hard-debugging",
+      "prompt": "No codebase, logs, or reproducer are available. An intermittent race fails about one CI run in twenty and two speculative fixes failed. Diagnose it by requesting the missing reproduction evidence before proposing a fix; do not inspect the empty workspace.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(reproduc|evidence|logs?)", "(?i)(frequency|conditions?|baseline|trace)"],
+      "forbidden_text_patterns": ["(?i)(the root cause is|the fix is|fixed by)"]
+    },
+    {
+      "id": "hard-debugging-performance-boundary",
+      "skill": "hard-debugging",
+      "prompt": "Production p99 latency rises only after forty minutes of sustained load. Existing profiling has not isolated a cause. State the next evidence to collect and how it would discriminate ranked hypotheses; do not patch anything yet.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(measure|metric|profil|trace|evidence)", "(?i)(hypoth|H[1-9])", "(?i)(compare|discriminat|predict|confirm)"],
+      "forbidden_text_patterns": ["(?i)(the root cause is|the fix is|fixed by)"]
+    },
+    {
+      "id": "hard-debugging-prevents-speculative-fix",
+      "skill": "hard-debugging",
+      "prompt": "Occasional duplicate charges cross the checkout service and payment worker. Two attempted fixes failed, and the only evidence is the symptom description. Explain the evidence-gathering sequence before any root-cause fix.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(reproduc|trace|correlation|evidence)", "(?i)(hypoth|instrument)", "(?i)(before|then|next)"],
+      "forbidden_text_patterns": ["(?i)(the root cause is|the fix is|fixed by)"]
+    },
+    {
+      "id": "code-review-findings-first",
+      "skill": "code-review",
+      "prompt": "Review the current review branch against main. Report findings first with severity and file:line evidence.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?is)\\A.{0,500}(issues|findings|critical|important|minor)", "(?i)(critical|important)", "auth\\.py:(8|9)"],
+      "forbidden_text_patterns": ["(?is)\\A.{0,100}(summary|strengths)"],
+      "project": {
+        "files": {
+          "auth.py": "class User:\n    def __init__(self, is_admin):\n        self.is_admin = is_admin\n\ndef allow_delete_account():\n    return True\n\ndef delete_allowed(user):\n    if user.is_admin:\n        return allow_delete_account()\n    return False\n"
+        },
+        "git": {
+          "base_branch": "main",
+          "branch": "review",
+          "changes": {
+            "auth.py": "class User:\n    def __init__(self, is_admin):\n        self.is_admin = is_admin\n\ndef allow_delete_account():\n    return True\n\ndef delete_allowed(user):\n    if user:\n        return allow_delete_account()\n    return False\n"
+          }
+        }
+      }
+    },
+    {
+      "id": "code-review-feedback-verification",
+      "skill": "code-review",
+      "prompt": "Verify this review suggestion against the project files rather than applying it blindly: 'Remove the null check in view.py because callers always pass a user.' Report findings first with severity and file:line evidence.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?is)\\A.{0,500}(issues|findings?|critical|important|minor|high)", "(?i)(critical|important|high)", "(api\\.py:5|view\\.py:(2|4))"],
+      "forbidden_text_patterns": [],
+      "project": {
+        "files": {
+          "api.py": "from view import render_user\n\ndef handle_lookup(result):\n    if result.status == 404:\n        return render_user(None)\n    return render_user(result.user)\n",
+          "view.py": "def render_user(user):\n    if user is None:\n        return 'Unknown user'\n    return user.name\n"
+        }
+      }
+    },
+    {
+      "id": "code-review-prevents-summary-first",
+      "skill": "code-review",
+      "prompt": "Pre-merge review the current review branch against main and lead with findings, severity, and file:line evidence. Focus on migration compatibility and rollback safety.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?is)\\A.{0,500}(issues|findings|critical|important|minor)", "(?i)critical", "(migrations/0042\\.sql:2|worker\\.py:2|rollback\\.sql:1)"],
+      "forbidden_text_patterns": ["(?is)\\A.{0,100}(summary|strengths)"],
+      "project": {
+        "files": {
+          "migrations/0042.sql": "-- Expand customer records.\nALTER TABLE customers ADD COLUMN archived_at timestamp;\n",
+          "worker.py": "def send_receipt(customer):\n    return deliver(customer.customer_email)\n",
+          "rollback.sql": "ALTER TABLE customers DROP COLUMN archived_at;\n"
+        },
+        "git": {
+          "base_branch": "main",
+          "branch": "review",
+          "changes": {
+            "migrations/0042.sql": "-- Destructive cutover before worker migration.\nALTER TABLE customers DROP COLUMN customer_email;\n",
+            "rollback.sql": "ALTER TABLE customers ADD COLUMN customer_email text;\n"
+          }
+        }
+      }
+    },
+    {
+      "id": "skill-development-selects-global-instruction",
+      "skill": "skill-development",
+      "prompt": "Agents in every repository must redact credentials from final responses, and no loaded instruction currently covers that behavior. Decide which mechanism fits among a skill, global instruction, project docs, command, dedicated agent, deterministic tool, or no change. Classify first and do not author anything yet.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)global instruction", "(?i)(because|applies|every task|every repository|pervasive)"],
+      "forbidden_text_patterns": []
+    },
+    {
+      "id": "skill-development-selects-deterministic-tool",
+      "skill": "skill-development",
+      "prompt": "We need to reject tabs in Python source in every CI run. This must be automatic enforcement, not an explicitly invoked user command. Before authoring anything, choose among a skill, instruction, project docs, command, dedicated agent, deterministic tool, or no change and justify the smallest mechanism.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)(deterministic (tool|check|lint)|lint(er| rule))", "(?i)(CI|enforce|machine|automatic)"],
+      "forbidden_text_patterns": []
+    },
+    {
+      "id": "skill-development-prevents-one-off-skill",
+      "skill": "skill-development",
+      "prompt": "For this one response only, keep the answer under five lines. Evaluate whether this should become a skill, instruction, docs entry, command, dedicated agent, deterministic tool, or no change. Classify first; do not edit files.",
+      "required_tools": [],
+      "forbidden_tools": ["apply_patch", "edit", "write"],
+      "required_text_patterns": ["(?i)no change", "(?i)(one-off|one response|not reusable)"],
+      "forbidden_text_patterns": []
+    }
+  ]
+}

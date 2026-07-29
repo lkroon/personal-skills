@@ -1,0 +1,23 @@
+{
+  "skill_name": "technical-html-presentations",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create docs/presentations/cache-invalidation.html from docs/adr/004-cache-invalidation.md, src/cache/, and benchmarks/cache.csv. It must work from file:// with no CDN, explain the decision to mixed technical stakeholders in about ten minutes, include speaker notes, and label benchmark timing as local evidence.",
+      "expected_output": "A self-contained, responsive, printable HTML deck grounded in repository sources, with a coherent decision narrative, controls, notes, source references, and qualified measurements.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Update docs/presentations/event-deduplication.html. The workflow slide jumps straight from raw events to the combined result. Replace it with sequential slides showing key construction, deduplication, representative evaluation, inverse-map expansion, and final reduction using rows from tests/data/events.csv. Preserve the deck's visual style.",
+      "expected_output": "A surgical deck update that invokes worked-example guidance, traces verified rows through intermediate states, and preserves styling, navigation, notes, mobile layout, and print behavior.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Insert two slides between slides 4 and 5 of docs/presentations/api-migration.html to explain identifier enumeration and a boundary case. Do not redesign the deck. Make sure every number, keyboard controls, touch navigation, speaker notes, progress bar, mobile tables, and print layout still work.",
+      "expected_output": "Two evidence-backed slides inserted without collateral redesign, all static numbering and metadata updated, wide content responsive, and the bundled validator passing.",
+      "files": []
+    }
+  ]
+}
