@@ -71,7 +71,7 @@ jobs:
           node-version: "22"
 
       - name: Install OpenCode
-        run: npm install --global opencode-ai@1.18.9
+        run: npm install --global opencode-ai@1.18.10
 
       - name: Run agent evaluation suite
         run: python3 tests/evaluate_skills.py --suite "$EVALUATION_SUITE" --all --model "$EVALUATION_MODEL"

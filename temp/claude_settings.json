@@ -2,7 +2,7 @@
   "permissions": {
     "defaultMode": "default",
     "additionalDirectories": [
-      "/home/lkroon",
+      "/home/luckr",
       "/tmp"
     ],
     "allow": [
@@ -84,12 +84,12 @@
       "Bash(terraform destroy*)"
     ],
     "deny": [
-      "Edit(/home/lkroon/.agents/skills/**)",
-      "Write(/home/lkroon/.agents/skills/**)",
-      "NotebookEdit(/home/lkroon/.agents/skills/**)",
-      "Edit(/home/lkroon/.claude/skills/**)",
-      "Write(/home/lkroon/.claude/skills/**)",
-      "NotebookEdit(/home/lkroon/.claude/skills/**)"
+      "Edit(/home/luckr/.agents/skills/**)",
+      "Write(/home/luckr/.agents/skills/**)",
+      "NotebookEdit(/home/luckr/.agents/skills/**)",
+      "Edit(/home/luckr/.claude/skills/**)",
+      "Write(/home/luckr/.claude/skills/**)",
+      "NotebookEdit(/home/luckr/.claude/skills/**)"
     ]
   },
   "model": "opus[1m]",

@@ -27,12 +27,13 @@ Seven reviewed domain skills remain distinct:
 | `grill-me` | An existing design, plan, or approach needs one-question-at-a-time stress-testing. |
 | `prototype` | A throwaway runnable experiment or set of UI variants should answer a design question. |
 | `architecture-analysis` | A codebase needs an architecture audit or deepening opportunities for testability and navigability. |
+| `cavecrew-ensemble` | A bounded 1-2 file change needs 2-3 proposal-only subagents run in parallel, reviewed and combined by the main agent. |
 | `triage` | Issues need classification, workflow management, or preparation for an agent. |
 | `handoff` | Current-session context must be compacted for another agent or later session. |
 | `technical-html-presentations` | Repository evidence must become or update a self-contained technical HTML presentation. |
 | `worked-example-documentation` | Documentation needs a verified end-to-end example through every intermediate representation. |
 
-`opencode-skills.json` is the source of truth for this twelve-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
+`opencode-skills.json` is the source of truth for this thirteen-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
 
 - `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` to disable `.claude` compatibility discovery.
 - `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` to disable external `.agents` discovery.
