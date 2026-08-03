@@ -20,10 +20,11 @@ The five canonical workflow skills are:
 | `code-review` | Reviewing a diff, branch, or PR; acting on review feedback; or independently scrutinizing materially risky work before merge. |
 | `skill-development` | Creating, improving, evaluating, consolidating, or retiring skills or choosing a better mechanism. |
 
-Seven reviewed domain skills remain distinct:
+Eight reviewed domain skills remain distinct:
 
 | Skill | Use it when |
 | --- | --- |
+| `agent-env` | A repository's linting, tests, and coverage gate must run in a disposable Docker environment rather than on the host. |
 | `grill-me` | An existing design, plan, or approach needs one-question-at-a-time stress-testing. |
 | `prototype` | A throwaway runnable experiment or set of UI variants should answer a design question. |
 | `architecture-analysis` | A codebase needs an architecture audit or deepening opportunities for testability and navigability. |
@@ -32,7 +33,7 @@ Seven reviewed domain skills remain distinct:
 | `technical-html-presentations` | Repository evidence must become or update a self-contained technical HTML presentation. |
 | `worked-example-documentation` | Documentation needs a verified end-to-end example through every intermediate representation. |
 
-`opencode-skills.json` is the source of truth for this twelve-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
+`opencode-skills.json` is the source of truth for this thirteen-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
 
 - `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` to disable `.claude` compatibility discovery.
 - `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` to disable external `.agents` discovery.

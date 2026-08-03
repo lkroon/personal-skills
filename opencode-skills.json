@@ -1,5 +1,6 @@
 {
   "skills": {
+    "agent-env": "skills/agent-env",
     "architecture-analysis": "skills/architecture-analysis",
     "code-review": "skills/code-review",
     "formal-design": "skills/formal-design",
