@@ -2,23 +2,23 @@
   "$schema": "https://opencode.ai/config.json",
 
   "instructions": [
-    "/home/lkroon/agents/skills/personal-skills/instructions/opencode-development.md"
+    "/home/luckr/personal-skills/instructions/opencode-development.md"
   ],
 
   "skills": {
     "paths": [
-      "/home/lkroon/agents/skills/personal-skills/skills/formal-design",
-      "/home/lkroon/agents/skills/personal-skills/skills/formal-planning",
-      "/home/lkroon/agents/skills/personal-skills/skills/hard-debugging",
-      "/home/lkroon/agents/skills/personal-skills/skills/code-review",
-      "/home/lkroon/agents/skills/personal-skills/skills/skill-development",
-      "/home/lkroon/agents/skills/personal-skills/opencode/skills/grill-me",
-      "/home/lkroon/agents/skills/personal-skills/skills/prototype",
-      "/home/lkroon/agents/skills/personal-skills/skills/architecture-analysis",
-      "/home/lkroon/agents/skills/personal-skills/skills/triage",
-      "/home/lkroon/agents/skills/personal-skills/skills/handoff",
-      "/home/lkroon/agents/skills/personal-skills/skills/technical-html-presentations",
-      "/home/lkroon/agents/skills/personal-skills/skills/worked-example-documentation"
+      "/home/luckr/personal-skills/skills/formal-design",
+      "/home/luckr/personal-skills/skills/formal-planning",
+      "/home/luckr/personal-skills/skills/hard-debugging",
+      "/home/luckr/personal-skills/skills/code-review",
+      "/home/luckr/personal-skills/skills/skill-development",
+      "/home/luckr/personal-skills/opencode/skills/grill-me",
+      "/home/luckr/personal-skills/skills/prototype",
+      "/home/luckr/personal-skills/skills/architecture-analysis",
+      "/home/luckr/personal-skills/skills/triage",
+      "/home/luckr/personal-skills/skills/handoff",
+      "/home/luckr/personal-skills/skills/technical-html-presentations",
+      "/home/luckr/personal-skills/skills/worked-example-documentation"
     ]
   },
 
@@ -97,8 +97,8 @@
     },
     "edit": {
       "*": "allow",
-      "/home/lkroon/.agents/skills/**": "deny",
-      "/home/lkroon/.claude/skills/**": "deny"
+      "/home/luckr/.agents/skills/**": "deny",
+      "/home/luckr/.claude/skills/**": "deny"
     },
     "external_directory": {
       "*": "ask",

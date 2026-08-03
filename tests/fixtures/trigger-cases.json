@@ -164,6 +164,36 @@
       "prompt": "Add a lint rule that rejects tabs in Python source files and enable it in CI.",
       "expected_skills": [],
       "forbidden_skills": ["skill-development"]
+    },
+    {
+      "id": "cavecrew-ensemble-best-of-three",
+      "prompt": "This bounded fix has several defensible approaches. Spawn 2-3 proposal-only subagents to solve the same task in parallel, then review their proposals yourself, combine the best parts, and apply the result.",
+      "expected_skills": ["cavecrew-ensemble"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "cavecrew-ensemble-parallel-variants",
+      "prompt": "Make this edge case safe — try it a few ways with parallel builders and pick the best result.",
+      "expected_skills": ["cavecrew-ensemble"],
+      "forbidden_skills": []
+    },
+    {
+      "id": "direct-single-known-answer-edit",
+      "prompt": "Change the error message text on line 12 of this file to the exact string I gave you and run the focused test.",
+      "expected_skills": [],
+      "forbidden_skills": ["cavecrew-ensemble"]
+    },
+    {
+      "id": "direct-review-by-fresh-agent",
+      "prompt": "Spawn a fresh reviewer subagent to audit my diff for bugs before I merge.",
+      "expected_skills": ["code-review"],
+      "forbidden_skills": ["cavecrew-ensemble"]
+    },
+    {
+      "id": "direct-multifile-refactor-main-thread",
+      "prompt": "Refactor this module's API surface across five files and update its callers.",
+      "expected_skills": [],
+      "forbidden_skills": ["cavecrew-ensemble"]
     }
   ]
 }

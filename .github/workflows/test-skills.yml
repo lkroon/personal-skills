@@ -36,6 +36,9 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements.txt
+
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
 
@@ -71,7 +74,7 @@ jobs:
           node-version: "22"
 
       - name: Install OpenCode
-        run: npm install --global opencode-ai@1.18.9
+        run: npm install --global opencode-ai@1.18.10
 
       - name: Run agent evaluation suite
         run: python3 tests/evaluate_skills.py --suite "$EVALUATION_SUITE" --all --model "$EVALUATION_MODEL"
