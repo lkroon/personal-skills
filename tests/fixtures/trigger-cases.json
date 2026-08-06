@@ -194,6 +194,24 @@
       "prompt": "Refactor this module's API surface across five files and update its callers.",
       "expected_skills": [],
       "forbidden_skills": ["cavecrew-ensemble"]
+    },
+    {
+      "id": "agent-env-docker-quality-gates",
+      "prompt": "Run this Pyramid application's Ruff, full pytest suite, and coverage gate in the disposable Docker environment described by AGENTS.md. Do not run the checks on the host.",
+      "expected_skills": ["agent-env"],
+      "forbidden_skills": ["formal-design", "hard-debugging"]
+    },
+    {
+      "id": "agent-env-targeted-debug-loop",
+      "prompt": "The application is already prepared with agent-env. Run one targeted test inside its container for quick feedback, then explain why a full check is still required.",
+      "expected_skills": ["agent-env"],
+      "forbidden_skills": ["formal-design"]
+    },
+    {
+      "id": "agent-env-near-negative-host-python",
+      "prompt": "Make a small change to this standalone Python script and run its local unit test directly. There is no Docker environment, no AGENTS.md instruction, and no repository quality-gate workflow.",
+      "expected_skills": [],
+      "forbidden_skills": ["agent-env"]
     }
   ]
 }
