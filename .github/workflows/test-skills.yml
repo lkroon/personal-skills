@@ -45,6 +45,11 @@ jobs:
       - name: Validate skill inventory and fixtures
         run: python3 tests/validate_skills.py
 
+      - name: Verify the generated OpenCode configuration
+        run: |
+          python3 tools/generate_opencode_config.py > "$RUNNER_TEMP/opencode.jsonc"
+          python3 tools/generate_opencode_config.py --verify "$RUNNER_TEMP/opencode.jsonc"
+
   agent-evaluations:
     name: Agent evaluations (${{ matrix.suite }}, ${{ inputs.model }})
     if: github.event_name == 'workflow_dispatch' && inputs.run_agent_evaluations

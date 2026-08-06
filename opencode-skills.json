@@ -1,5 +1,6 @@
 {
   "skills": {
+    "agent-env": "skills/agent-env",
     "architecture-analysis": "skills/architecture-analysis",
     "cavecrew-ensemble": "skills/cavecrew-ensemble",
     "code-review": "skills/code-review",

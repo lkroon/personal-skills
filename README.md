@@ -20,10 +20,11 @@ The five canonical workflow skills are:
 | `code-review` | Reviewing a diff, branch, or PR; acting on review feedback; or independently scrutinizing materially risky work before merge. |
 | `skill-development` | Creating, improving, evaluating, consolidating, or retiring skills or choosing a better mechanism. |
 
-Seven reviewed domain skills remain distinct:
+Nine reviewed domain skills remain distinct:
 
 | Skill | Use it when |
 | --- | --- |
+| `agent-env` | A repository's linting, tests, and coverage gate must run in a disposable Docker environment rather than on the host. |
 | `grill-me` | An existing design, plan, or approach needs one-question-at-a-time stress-testing. |
 | `prototype` | A throwaway runnable experiment or set of UI variants should answer a design question. |
 | `architecture-analysis` | A codebase needs an architecture audit or deepening opportunities for testability and navigability. |
@@ -33,7 +34,7 @@ Seven reviewed domain skills remain distinct:
 | `technical-html-presentations` | Repository evidence must become or update a self-contained technical HTML presentation. |
 | `worked-example-documentation` | Documentation needs a verified end-to-end example through every intermediate representation. |
 
-`opencode-skills.json` is the source of truth for this thirteen-skill inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
+`opencode-skills.json` is the source of truth for this inventory. OpenCode configuration expands that manifest into explicit `skills.paths`; it does not load the entire `skills/` tree. The supported launcher sets:
 
 - `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` to disable `.claude` compatibility discovery.
 - `OPENCODE_DISABLE_EXTERNAL_SKILLS=1` to disable external `.agents` discovery.
@@ -41,6 +42,27 @@ Seven reviewed domain skills remain distinct:
 These flags prevent legacy or global copies from being rediscovered alongside the manifest and producing duplicate names. Invoking the vendor binary directly or using another integration can bypass the launcher and is unsupported until configured with the same flags and explicit paths.
 
 Legacy personal skill directories are not deleted. They remain available to Claude Code through symlinks in `~/.claude/skills`, while OpenCode loads only manifest entries. Existing `~/.agents/skills` installations are also preserved for non-OpenCode consumers.
+
+## Setup
+
+Install OpenCode, authenticate, then point it at this checkout:
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+opencode auth login          # select GitHub Copilot; a device flow, no API key
+git clone <this-repository> ~/agents/skills/personal-skills
+cd ~/agents/skills/personal-skills && ./bootstrap.sh
+```
+
+`bootstrap.sh` writes `~/.config/opencode/opencode.jsonc` and the launcher at `~/.local/bin/opencode`, then checks that OpenCode resolves exactly the manifest skills. It is safe to re-run; an existing configuration is backed up alongside itself. Re-run it after every change to `opencode-skills.json`.
+
+```bash
+./bootstrap.sh              # install or refresh
+./bootstrap.sh --verify     # report drift, change nothing
+./bootstrap.sh --dry-run    # print the configuration that would be written
+```
+
+`instructions`, `skills.paths`, and `permission.skill` are **generated** from the manifest by `tools/generate_opencode_config.py`; everything else is copied from `tools/opencode-base.json`, whose `{{REPO}}` and `{{HOME}}` placeholders are substituted at install time. Edit the manifest or the base file, never the installed configuration — `--verify` fails when the two disagree, and CI runs the same check.
 
 ## Development
 
@@ -59,7 +81,7 @@ python3 tests/evaluate_skills.py --suite outcome --case <case-id>
 
 Whole suites invoke a model and require explicit `--all`.
 
-GitHub Actions runs the unit tests and static validator on every push and pull request. The model-backed suites run only from **Actions > Test skills > Run workflow** with `run_agent_evaluations` enabled.
+GitHub Actions runs the unit tests, the static validator, and the configuration drift check on every push and pull request. The model-backed suites run only from **Actions > Test skills > Run workflow** with `run_agent_evaluations` enabled.
 
 The default `opencode/big-pickle` evaluation model currently uses OpenCode's public free access, so it needs no token. To select a paid OpenCode Zen model, create an OpenCode Zen API key and add it as a repository or organization Actions secret named `OPENCODE_API_KEY` (or run `gh secret set OPENCODE_API_KEY`). GitHub's automatic `GITHUB_TOKEN` is only a repository automation token; it cannot call a model provider, and the evaluation harness deliberately removes it before launching OpenCode. Local evaluations instead use provider environment variables or credentials already stored by `opencode auth login` in `~/.local/share/opencode/auth.json`.
 
@@ -70,6 +92,9 @@ opencode-skills.json                         # active OpenCode inventory
 instructions/opencode-development.md        # always-on OpenCode guidance
 skills/<skill-name>/SKILL.md                 # canonical or preserved legacy skills
 opencode/skills/<skill-name>/SKILL.md        # OpenCode-specific adaptation
+bootstrap.sh                                 # one-command machine setup
+tools/generate_opencode_config.py            # generate/verify the local configuration
+tools/opencode-base.json                     # static configuration, with placeholders
 tests/validate_skills.py                     # static validation
 tests/evaluate_skills.py                     # isolated trigger/outcome evaluation
 ```
