@@ -40,8 +40,8 @@ Replace `.` with the repository path if you are not in it.
 Do not interrupt `check`, and do not pipe it through `tail` or `head`: its exit
 code is the result and it is easy to discard. Only one `check` or targeted `exec`
 may run for a project at a time; a concurrent invocation refuses with a message.
-If an older launcher was killed before it could clean up, the next invocation
-will reclaim its stale lock and clean up its in-container process before running.
+If this launcher is killed before it can clean up, the next invocation will
+reclaim its stale lock and clean up its marked in-container process before running.
 
 Do not invent your own `docker` or `docker compose` invocation, and do not run
 `pytest`, `ruff`, or `uv` on the host. The host has neither the dependencies nor
