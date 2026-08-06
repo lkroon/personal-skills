@@ -134,6 +134,5 @@ uv tool install git+https://github.com/lkroon/agentic-dev-tools
 
 Suggest that and stop. Do not install it yourself unless you were asked to.
 
-> **Maintenance:** This skill is distributed in two repositories. Keep this file
-> synchronized with `agentic-dev-tools/plugins/agent-env/skills/agent-env/SKILL.md`
-> whenever either copy changes.
+> **Maintenance:** This skill is distributed in two repositories. Keep both
+> `SKILL.md` copies synchronized whenever either copy changes.
