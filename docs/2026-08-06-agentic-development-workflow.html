@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A practical walkthrough of an agentic development workflow for our Pyramid application fleet: installing OpenCode, connecting Copilot, always-on instructions, a synced AGENTS.md contract, on-demand skills, skill evaluations, and containerised verification — plus the known gaps and how to help close them.">
+  <title>Agentic Development: How I Work Now</title>
+  <style>
+    :root {
+      --ink: #161815;
+      --paper: #f2efe7;
+      --paper-deep: #e5e0d5;
+      --acid: #d7ff36;
+      --coral: #ff664a;
+      --blue: #255cff;
+      --muted: #676a61;
+      --line: rgba(22, 24, 21, 0.18);
+      --pad: clamp(1.4rem, 4.2vw, 4.6rem);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--ink);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body { overflow: hidden; }
+
+    button { font: inherit; }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 34rem;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      grid-template-rows: auto 1fr auto;
+      grid-template-columns: minmax(0, 1fr);
+      gap: clamp(0.8rem, 1.9vh, 1.6rem);
+      padding: var(--pad);
+      padding-bottom: clamp(4.4rem, 9vh, 6rem);
+      overflow: auto;
+      background:
+        linear-gradient(90deg, transparent 0 49.85%, rgba(22, 24, 21, 0.045) 49.85% 50.15%, transparent 50.15%),
+        var(--paper);
+    }
+
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0.55rem;
+      height: 100%;
+      background: var(--accent, var(--acid));
+    }
+
+    .slide-head,
+    .slide-foot {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.65rem, 0.9vw, 0.82rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .slide-head {
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .slide-foot { color: var(--muted); }
+
+    .eyebrow {
+      display: inline-block;
+      width: fit-content;
+      margin-bottom: 0.8rem;
+      padding: 0.35rem 0.55rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.65rem, 0.9vw, 0.82rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow.hot { background: var(--acid); color: var(--ink); }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1, h2 {
+      max-width: 12ch;
+      margin-bottom: 1rem;
+      font-size: clamp(3rem, 8.2vw, 7.4rem);
+      line-height: 0.87;
+      letter-spacing: -0.075em;
+    }
+
+    h2 {
+      max-width: 16ch;
+      margin-bottom: 0.7rem;
+      font-size: clamp(2.1rem, 4.6vw, 4.4rem);
+    }
+
+    h2.wide { max-width: 23ch; }
+
+    h3 {
+      margin-bottom: 0.55rem;
+      font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+      line-height: 1.05;
+    }
+
+    p {
+      font-size: clamp(0.88rem, 1.25vw, 1.12rem);
+      line-height: 1.35;
+    }
+
+    code, .mono { font-family: "Courier New", Courier, monospace; }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      align-self: center;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr);
+      gap: clamp(2rem, 6vw, 7rem);
+      align-items: end;
+    }
+
+    .dek {
+      max-width: 44rem;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(0.95rem, 1.6vw, 1.4rem);
+    }
+
+    .stat-stack { border-top: 0.45rem solid var(--ink); }
+
+    .stat {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: baseline;
+      padding: 0.72rem 0;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .stat strong {
+      font-size: clamp(1.7rem, 3.4vw, 3.6rem);
+      letter-spacing: -0.06em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.62rem, 0.95vw, 0.85rem);
+      text-transform: uppercase;
+    }
+
+    .ladder {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.4rem;
+      counter-reset: rung;
+      margin-top: clamp(1rem, 2.4vh, 1.8rem);
+    }
+
+    .ladder div {
+      min-width: 0;
+      padding: 0.5rem;
+      border: 1px solid var(--ink);
+      border-top: 0.3rem solid var(--accent, var(--acid));
+      background: var(--paper-deep);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.56rem, 0.78vw, 0.72rem);
+      line-height: 1.28;
+      counter-increment: rung;
+    }
+
+    .ladder div::before {
+      content: counter(rung);
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .ladder div:nth-child(-n + 3) { border-top-color: var(--acid); }
+    .ladder div:nth-child(n + 4):nth-child(-n + 5) { border-top-color: var(--blue); }
+    .ladder div:nth-child(n + 6) { border-top-color: var(--coral); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(1rem, 2.6vw, 2.2rem);
+      align-items: start;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(0.8rem, 2vw, 1.4rem);
+    }
+
+    .grid-2 > *,
+    .grid-3 > * { min-width: 0; }
+
+    .card {
+      min-width: 0;
+      padding: clamp(0.9rem, 1.8vw, 1.4rem);
+      border: 1px solid var(--ink);
+      background: rgba(242, 239, 231, 0.78);
+      box-shadow: 0.45rem 0.45rem 0 var(--accent, var(--acid));
+    }
+
+    .card p:last-child { margin-bottom: 0; }
+    .card p { font-size: clamp(0.8rem, 1.05vw, 0.98rem); }
+
+    .delta-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: 0.9rem 0 0;
+    }
+
+    .pill {
+      padding: 0.42rem 0.68rem;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.63rem, 0.88vw, 0.8rem);
+    }
+
+    .pill.acid { background: var(--acid); color: var(--ink); }
+    .pill.coral { background: var(--coral); color: var(--ink); }
+    .pill.blue { background: var(--blue); color: white; }
+
+    .code {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.64rem, 0.9vw, 0.82rem);
+      line-height: 1.55;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .code .dim { color: #9aa08f; }
+    .code .hot { color: var(--acid); }
+    .code .warn { color: var(--coral); }
+
+    .flag {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-left: 0.4rem solid var(--blue);
+      background: var(--paper-deep);
+      font-size: clamp(0.78rem, 1.05vw, 0.98rem);
+      line-height: 1.35;
+    }
+
+    .flag p { margin: 0; font-size: inherit; }
+    .flag p + p { margin-top: 0.4rem; }
+    .flag.warn { border-left-color: var(--coral); }
+    .flag.win { border-left-color: #177332; }
+
+    .flag-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.8em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .payoff {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem 1.2rem;
+      margin-top: 0.9rem;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid var(--ink);
+      background: var(--acid);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+      font-weight: 700;
+    }
+
+    .table-wrap { overflow-x: auto; min-width: 0; max-width: 100%; margin-top: 1rem; }
+
+    table {
+      width: 100%;
+      min-width: 25rem;
+      border-collapse: collapse;
+      font-size: clamp(0.72rem, 1vw, 0.92rem);
+    }
+
+    th, td {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--ink);
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.3;
+    }
+
+    th {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85em;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(even) { background: rgba(22, 24, 21, 0.05); }
+    td .mono { font-size: 0.94em; }
+    .kill { color: var(--coral); font-weight: 700; }
+    .keep { color: #177332; font-weight: 700; }
+
+    .checklist { margin: 0; padding: 0; list-style: none; }
+
+    .checklist li {
+      padding: 0.42rem 0 0.42rem 1.4rem;
+      border-bottom: 1px solid var(--line);
+      font-size: clamp(0.78rem, 1.05vw, 0.98rem);
+      line-height: 1.3;
+      text-indent: -1.4rem;
+    }
+
+    .checklist li::before {
+      content: "\2014";
+      display: inline-block;
+      width: 1.4rem;
+      color: var(--accent, var(--acid));
+      font-weight: 700;
+      text-indent: 0;
+    }
+
+    .checklist li:last-child { border-bottom: 0; }
+
+    .inventory {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: clamp(1rem, 2.6vw, 2rem);
+    }
+
+    .skill-group {
+      position: relative;
+      min-width: 0;
+      padding: clamp(0.9rem, 1.8vw, 1.4rem);
+      border: 2px solid var(--ink);
+    }
+
+    .skill-group.workflow { background: var(--ink); color: var(--paper); }
+    .skill-group.domain { background: var(--acid); }
+    .skill-group p { font-size: clamp(0.76rem, 1vw, 0.92rem); }
+
+    .skill-count {
+      position: absolute;
+      top: 0.7rem;
+      right: 1rem;
+      font-size: clamp(2.2rem, 4.4vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1;
+      opacity: 0.22;
+    }
+
+    .skill-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem;
+      margin-top: 0.9rem;
+    }
+
+    .skill-list span {
+      min-width: 0;
+      padding: 0.42rem 0.5rem;
+      border: 1px solid currentColor;
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.6rem, 0.8vw, 0.74rem);
+      overflow-wrap: anywhere;
+    }
+
+    .system-map {
+      display: grid;
+      grid-template-columns: 1fr auto 1.25fr auto 1fr;
+      gap: clamp(0.4rem, 1.1vw, 1rem);
+      align-items: stretch;
+      margin-top: 1.1rem;
+    }
+
+    .system-node {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 8.5rem;
+      padding: 0.9rem;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .system-node.primary { background: var(--blue); color: white; }
+
+    .system-node code {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .system-node p { margin: 0; font-size: clamp(0.74rem, 0.95vw, 0.9rem); }
+
+    .system-arrow {
+      align-self: center;
+      font-size: clamp(1.2rem, 2.6vw, 2.2rem);
+      font-weight: 800;
+    }
+
+    .route {
+      display: grid;
+      grid-template-columns: repeat(7, auto);
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: start;
+      margin: 0.9rem 0;
+    }
+
+    .route-step {
+      min-width: 7rem;
+      padding: 0.7rem 0.5rem;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.66rem, 0.95vw, 0.88rem);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .route-step:nth-of-type(4) { background: var(--acid); }
+    .route-arrow { font-size: 1.3rem; font-weight: 700; }
+
+    .test-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      align-items: stretch;
+      margin-top: 1.1rem;
+    }
+
+    .test-box {
+      position: relative;
+      min-width: 0;
+      padding: 1rem;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    .test-box:nth-child(1) { background: var(--acid); }
+    .test-box:nth-child(2) { background: var(--coral); }
+    .test-box:nth-child(3) { background: var(--ink); color: white; }
+
+    .big-number {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      font-weight: 800;
+      line-height: 0.85;
+      letter-spacing: -0.08em;
+    }
+
+    .test-box p { font-size: clamp(0.74rem, 1vw, 0.92rem); }
+
+    .proof {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 0.9rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--ink);
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+    }
+
+    .proof strong { color: #177332; }
+
+    .loop {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.65rem;
+      counter-reset: lifecycle;
+      margin-top: 1.1rem;
+    }
+
+    .loop-step {
+      min-width: 0;
+      min-height: 6.6rem;
+      padding: 0.75rem;
+      border: 1px solid var(--ink);
+      background: var(--paper-deep);
+      counter-increment: lifecycle;
+    }
+
+    .loop-step::before {
+      content: "0" counter(lifecycle);
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--blue);
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+    }
+
+    .loop-step:nth-child(3n + 1) { border-top: 0.4rem solid var(--acid); }
+    .loop-step:nth-child(3n + 2) { border-top: 0.4rem solid var(--coral); }
+    .loop-step:nth-child(3n + 3) { border-top: 0.4rem solid var(--blue); }
+
+    .loop-step h3 { margin-bottom: 0.35rem; font-size: clamp(0.82rem, 1.05vw, 1rem); }
+    .loop-step p { margin: 0; font-size: clamp(0.72rem, 0.95vw, 0.88rem); }
+    .loop-step .tag {
+      display: block;
+      margin-top: 0.4rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: clamp(0.6rem, 0.8vw, 0.72rem);
+      color: var(--muted);
+    }
+
+    .closing {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(19rem, 1.05fr);
+      gap: clamp(1.6rem, 4vw, 4rem);
+      align-items: center;
+    }
+
+    .takeaway-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 0.45rem solid var(--ink);
+    }
+
+    .takeaway-list li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.8rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--ink);
+      font-size: clamp(0.8rem, 1.1vw, 1.02rem);
+      line-height: 1.3;
+    }
+
+    .takeaway-list strong {
+      color: var(--blue);
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .speaker-notes { display: none; }
+
+    .controls {
+      position: fixed;
+      z-index: 20;
+      right: clamp(1rem, 2.5vw, 2rem);
+      bottom: clamp(0.8rem, 2vh, 1.4rem);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .nav-button {
+      width: 2.65rem;
+      height: 2.65rem;
+      border: 1px solid var(--paper);
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--paper);
+      cursor: pointer;
+    }
+
+    .nav-button:hover,
+    .nav-button:focus-visible {
+      background: var(--acid);
+      color: var(--ink);
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .counter {
+      min-width: 4.8rem;
+      color: var(--ink);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .progress-rail {
+      position: fixed;
+      z-index: 19;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.42rem;
+      background: rgba(22, 24, 21, 0.16);
+    }
+
+    .progress { height: 100%; width: 10%; background: var(--blue); transition: width 180ms ease; }
+
+    .help {
+      position: fixed;
+      z-index: 20;
+      left: clamp(1rem, 2.5vw, 2rem);
+      bottom: clamp(1rem, 2.2vh, 1.55rem);
+      color: var(--muted);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      .deck { min-height: 30rem; }
+      .slide { padding-top: 1.25rem; padding-right: 1.2rem; padding-left: 1.45rem; overflow-x: hidden; }
+      .slide-head span:last-child { display: none; }
+      .hero, .closing, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .hero { align-items: start; }
+      .stat-stack { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .stat { grid-template-columns: 1fr; gap: 0; padding-right: 0.5rem; }
+      .stat strong { font-size: 1.8rem; }
+      .stat span { font-size: 0.56rem; }
+      .ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .loop, .test-matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .inventory { grid-template-columns: 1fr; }
+      .skill-list { grid-template-columns: 1fr; }
+      .system-map { grid-template-columns: 1fr; }
+      .system-arrow { transform: rotate(90deg); justify-self: center; }
+      .system-node { min-height: auto; }
+      .route { grid-template-columns: 1fr; }
+      .route-arrow { transform: rotate(90deg); text-align: center; }
+      .help { display: none; }
+      .slide-foot { max-width: calc(100% - 8rem); }
+      h1 { font-size: clamp(2.6rem, 13vw, 4.8rem); }
+      h2, h2.wide { max-width: 100%; font-size: clamp(1.7rem, 8vw, 3.2rem); overflow-wrap: break-word; }
+      .code { font-size: 0.6rem; padding: 0.7rem 0.8rem; }
+      table { min-width: 21rem; font-size: 0.72rem; }
+      th, td { padding: 0.45rem 0.5rem; }
+      .checklist li { font-size: 0.82rem; }
+    }
+
+    @media (max-height: 920px) and (min-width: 901px) {
+      :root { --pad: clamp(1.2rem, 3vw, 2.6rem); }
+      .slide { gap: 0.6rem; padding-bottom: 3.6rem; }
+      h2 { font-size: clamp(1.8rem, 3.6vw, 3.1rem); margin-bottom: 0.45rem; }
+      .eyebrow { margin-bottom: 0.5rem; padding: 0.28rem 0.5rem; }
+      .system-node { min-height: 6.4rem; padding: 0.75rem; }
+      .loop-step { min-height: 5.2rem; padding: 0.6rem; }
+      .flag { margin-top: 0.6rem; padding: 0.55rem 0.8rem; }
+      .payoff { margin-top: 0.6rem; padding: 0.5rem 0.8rem; }
+      .code { padding: 0.6rem 0.8rem; line-height: 1.38; }
+      .checklist li { padding: 0.3rem 0 0.3rem 1.4rem; }
+      .skill-list { margin-top: 0.7rem; gap: 0.35rem; }
+      .test-matrix, .table-wrap, .system-map, .loop, .ladder { margin-top: 0.75rem; }
+      .card { padding: 0.8rem; }
+      .takeaway-list li { padding: 0.5rem 0; }
+      h3 { margin-bottom: 0.4rem; }
+    }
+
+    @media (max-height: 730px) and (min-width: 901px) {
+      .slide { gap: 0.45rem; padding-bottom: 3.2rem; }
+      h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); }
+      p, .card p, .flag, .skill-group p { font-size: 0.86rem; }
+      .code { font-size: 0.62rem; line-height: 1.32; }
+      .big-number { font-size: clamp(2rem, 3.6vw, 3rem); }
+      .checklist li { padding: 0.24rem 0 0.24rem 1.3rem; font-size: 0.84rem; }
+      .system-node { min-height: 5.2rem; }
+      .loop-step { min-height: 4.4rem; }
+      .test-box { padding: 0.75rem; }
+      .proof { margin-top: 0.6rem; padding: 0.5rem 0.8rem; }
+    }
+
+    @media print {
+      @page { size: landscape; margin: 0; }
+      body { overflow: visible; background: white; }
+      .deck { width: auto; height: auto; overflow: visible; }
+      .slide, .slide.active {
+        position: relative;
+        display: grid;
+        width: 100vw;
+        height: 100vh;
+        break-after: page;
+        page-break-after: always;
+        overflow: hidden;
+      }
+      .controls, .progress-rail, .help { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+
+    <section class="slide active" style="--accent: var(--acid)" aria-label="Title slide">
+      <header class="slide-head"><span>Agentic development / how I work now</span><span>06 Aug 2026</span></header>
+      <div class="content">
+        <div class="hero">
+          <div>
+            <span class="eyebrow">Seven steps, adopt them one at a time</span>
+            <h1>Same model. Better results.</h1>
+            <p class="dek">We all have the same Copilot licence. The difference between a frustrating agent session and a genuinely useful one is not the model — it is the context and the guardrails you give it. All of it is plain text files in git, so it is reviewable, testable, and yours to improve.</p>
+            <div class="delta-line">
+              <span class="pill acid">Nothing new to buy</span>
+              <span class="pill blue">Steps 1&ndash;3 in 15 minutes</span>
+              <span class="pill coral">Every piece works on its own</span>
+            </div>
+          </div>
+          <div class="stat-stack" aria-label="Key figures">
+            <div class="stat"><strong>24</strong><span>lines that do the most work</span></div>
+            <div class="stat"><strong>14</strong><span>skills, loaded on demand</span></div>
+            <div class="stat"><strong>21</strong><span>apps the contract reaches</span></div>
+          </div>
+        </div>
+        <div class="ladder" aria-label="The seven steps">
+          <div>Install the CLI</div>
+          <div>Connect Copilot</div>
+          <div>Always-on instructions</div>
+          <div>AGENTS.md per repo</div>
+          <div>Skills on demand</div>
+          <div>Evals for the skills</div>
+          <div>Verify in a container</div>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Everything shown is running today on my machine and in our repositories</span><span>01 / 10</span></footer>
+      <aside class="speaker-notes">Set the tone: this is a walkthrough, not a sales pitch, and every step is independently useful. Steps 1 to 3 take about fifteen minutes and give most of the day-to-day benefit; 4 to 7 are the team-scale investment. Emphasise the last pill — nobody has to adopt all seven to get value. The three figures preview the three layers: the instruction file, the skill inventory, and the fleet reach.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--blue)" aria-label="Step 1: install the OpenCode CLI">
+      <header class="slide-head"><span>Step 1 / Install</span><span>Five minutes</span></header>
+      <div class="content">
+        <span class="eyebrow">opencode</span>
+        <h2 class="wide">Install the CLI, then point it at your skills.</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Install</h3>
+            <pre class="code">curl -fsSL https://opencode.ai/install | bash
+
+<span class="dim"># or, if you prefer npm</span>
+npm install --global opencode-ai
+
+opencode --version
+<span class="hot">1.18.14</span></pre>
+            <p class="dek" style="margin-top: 0.7rem; font-size: 0.9rem">A terminal-native coding agent. It reads your repo, edits files, runs commands, and asks before anything destructive.</p>
+          </div>
+          <div>
+            <h3>A four-line launcher, once</h3>
+            <pre class="code"><span class="dim"># ~/.local/bin/opencode</span>
+#!/usr/bin/env bash
+export OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1
+export OPENCODE_DISABLE_EXTERNAL_SKILLS=1
+exec ~/.opencode/bin/opencode "$@"</pre>
+            <p class="dek" style="margin-top: 0.7rem; font-size: 0.9rem">These two flags make OpenCode load <em>exactly</em> the skills you list and nothing else. Without them it also auto-discovers <span class="mono">~/.claude/skills</span> and <span class="mono">~/.agents/skills</span>, and you get duplicate names and unpredictable behaviour.</p>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>Setup: 5 minutes</span>
+          <span>&#10003; A coding agent in every repo you work in</span>
+          <span>&#10003; Predictable, explicit skill loading</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Source: ~/.local/bin/opencode, personal-skills/README.md</span><span>02 / 10</span></footer>
+      <aside class="speaker-notes">Demo live if possible: run opencode in a real repo and ask it something small. The launcher is the only non-obvious part and it exists for one reason — a name-based allowlist cannot tell two same-named skills apart when they come from different directories, so we disable discovery entirely and list paths explicitly. Mention that the permission block in opencode.jsonc is worth copying too: everything allowed by default, with ask on sudo, rm, git push, gh pr create, docker push and cloud CLIs.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--blue)" aria-label="Step 2: connect GitHub Copilot">
+      <header class="slide-head"><span>Step 2 / Connect</span><span>Two minutes</span></header>
+      <div class="content">
+        <span class="eyebrow">Use the licence you already have</span>
+        <h2 class="wide">One command. No key to paste anywhere.</h2>
+        <div class="grid-2">
+          <div>
+            <pre class="code">opencode auth login
+
+  <span class="dim">&rarr; select</span> GitHub Copilot
+  <span class="dim">&rarr; browser opens, enter the device code</span>
+  <span class="dim">&rarr; done</span>
+
+<span class="dim"># stored as an OAuth pair that refreshes
+# itself — nothing to rotate by hand</span>
+~/.local/share/opencode/auth.json</pre>
+            <p class="dek" style="margin-top: 0.7rem; font-size: 0.9rem">Models are then addressed as <span class="mono">github-copilot/claude-opus-5</span>. Switch model per session; the whole Copilot catalogue is available.</p>
+          </div>
+          <div>
+            <h3>Why this is the easy step</h3>
+            <ul class="checklist" style="--accent: var(--blue)">
+              <li>No API key to request, paste, or store.</li>
+              <li>No new subscription, no procurement, no cost centre.</li>
+              <li>Same entitlement as Copilot in your editor &mdash; this is just a better front end for it.</li>
+              <li>Tokens refresh automatically, so it keeps working.</li>
+            </ul>
+            <div class="flag">
+              <span class="flag-label">Worth knowing</span>
+              <p>The agent inherits your shell environment, so it can see whatever your <span class="mono">gh</span> token can do. Keep that PAT scoped to what you actually need &mdash; good hygiene regardless of agents.</p>
+            </div>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>Setup: 2 minutes</span>
+          <span>&#10003; Running on existing licensing</span>
+          <span>&#10003; Any Copilot model, per session</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Source: auth.json, opencode auth login</span><span>03 / 10</span></footer>
+      <aside class="speaker-notes">This is the step people expect to be hard and it is not. Stress that there is no key handling at all — it is a device OAuth flow like signing into any other GitHub app. If someone asks about cost: this consumes the Copilot entitlement we already pay for. The PAT note is a hygiene tip, not a warning about OpenCode specifically; the same is true of any tool that runs commands on your behalf.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--acid)" aria-label="Step 3: always-on instructions">
+      <header class="slide-head"><span>Step 3 / Instructions</span><span>The cheapest big win</span></header>
+      <div class="content">
+        <span class="eyebrow">instructions/opencode-development.md &mdash; 24 lines</span>
+        <h2 class="wide">Stop the agent over-engineering your two-line fix.</h2>
+        <div class="grid-2">
+          <div>
+            <p>Out of the box, agents love ceremony: a plan, a design doc, a test-first ritual and a summary, for a one-line change. One short file, loaded into every session, fixes it.</p>
+            <div class="route" aria-label="Default development route">
+              <div class="route-step">inspect</div><div class="route-arrow" aria-hidden="true">&gt;</div>
+              <div class="route-step">edit</div><div class="route-arrow" aria-hidden="true">&gt;</div>
+              <div class="route-step">verify</div><div class="route-arrow" aria-hidden="true">&gt;</div>
+              <div class="route-step">report</div>
+            </div>
+            <p style="font-size: 0.92rem">Plus: smallest correct change, preserve unrelated edits, resolve small ambiguities from the repo instead of asking, verify with the narrowest command that proves the claim.</p>
+          </div>
+          <div>
+            <div class="flag">
+              <span class="flag-label">The line that does the heavy lifting</span>
+              <p><em>"File count, feature work, and behavior changes alone are not formal-workflow triggers. If material risk appears during direct execution, stop and escalate then."</em></p>
+            </div>
+            <div class="flag win">
+              <span class="flag-label">Escalate only when risk is real</span>
+              <p>Architecture or public APIs &middot; security, privacy, authorization &middot; migrations or destructive operations &middot; cross-system ambiguity &middot; weak verification &middot; unfamiliar tech with a high cost of failure.</p>
+            </div>
+            <p style="margin-top: 0.7rem; font-size: 0.92rem">Wire it up once in <span class="mono">opencode.jsonc</span> under <span class="mono">instructions</span>, and it applies in every repo you open.</p>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>Setup: 5 minutes</span>
+          <span>&#10003; Copy the file, change nothing else</span>
+          <span>&#10003; The single biggest quality-of-life jump here</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Source: instructions/opencode-development.md</span><span>04 / 10</span></footer>
+      <aside class="speaker-notes">If people only take one thing away, make it this slide. It costs nothing, needs no team agreement, and it is the difference between an agent that feels like a colleague and one that feels like a process consultant. The counter-intuitive insight worth stating: most of the effort in this whole system went into making the agent do less, not more. Twenty-four lines, loaded every session, no per-repo setup.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--blue)" aria-label="Step 4: AGENTS.md per repository">
+      <header class="slide-head"><span>Step 4 / Repo knowledge</span><span>Write a lesson once</span></header>
+      <div class="content">
+        <span class="eyebrow">template-pyramid-app / AGENTS.md</span>
+        <h2 class="wide">The things that bite everyone, written down once.</h2>
+        <div class="grid-2">
+          <div>
+            <ul class="checklist">
+              <li><strong>The silent trap.</strong> A model not imported in <span class="mono">models/__init__.py</span> is never mapped &mdash; the table just does not exist, with no error.</li>
+              <li><strong>Test isolation is per module</strong>, not per test. A test that passes alone can fail in suite order.</li>
+              <li><strong>Views need a permission</strong>, or they are reachable unauthenticated.</li>
+              <li><strong>Where things live:</strong> routes, models, views, migrations &mdash; so the agent extends the structure instead of inventing one.</li>
+              <li><strong>Alembic reality:</strong> most apps set <span class="mono">target_metadata = None</span>, so <span class="mono">--autogenerate</span> silently writes an empty migration.</li>
+              <li><strong>Secrets and database rules</strong> the agent must never cross.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>And it travels to the whole fleet</h3>
+            <div class="system-map" aria-label="Template synchronisation pipeline">
+              <div class="system-node">
+                <code>template main</code>
+                <p>You improve <span class="mono">AGENTS.md</span> once.</p>
+              </div>
+              <div class="system-arrow" aria-hidden="true">&gt;</div>
+              <div class="system-node primary">
+                <code>synchronizer.yml</code>
+                <p>Already runs: dispatches to <strong>21</strong> app repositories.</p>
+              </div>
+              <div class="system-arrow" aria-hidden="true">&gt;</div>
+              <div class="system-node">
+                <code>a PR in each app</code>
+                <p>Reviewed and merged by a human, like any other change.</p>
+              </div>
+            </div>
+            <p style="margin-top: 0.8rem; font-size: 0.92rem"><span class="mono">CLAUDE.md</span> is a one-line <span class="mono">@AGENTS.md</span> import, so Claude Code and OpenCode read the same file. One source, both tools.</p>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>Effort: ongoing, shared</span>
+          <span>&#10003; Every debugging lesson becomes permanent</span>
+          <span>&#10003; New joiners and agents read the same guide</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Sources: AGENTS.md, .template/sync/sync.py, .github/workflows/synchronizer.yml</span><span>05 / 10</span></footer>
+      <aside class="speaker-notes">Frame this as institutional memory that finally has somewhere to live. Every one of those bullets is a real bug someone on this team has spent an afternoon on. The pipeline is not hypothetical — the synchroniser already fans out to 21 repositories for template changes today; the contract file is on the agent-env branch and rolling it out is the first item on the recommendations slide. Good moment to invite additions: if something has bitten you twice, it belongs in this file.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--acid)" aria-label="Step 5: skills loaded on demand">
+      <header class="slide-head"><span>Step 5 / Skills</span><span>Loaded only when the prompt needs them</span></header>
+      <div class="content">
+        <span class="eyebrow">opencode-skills.json</span>
+        <h2 class="wide">Deeper expertise, only when it is asked for.</h2>
+        <div class="inventory">
+          <div class="skill-group workflow">
+            <span class="skill-count">5</span>
+            <h3>Workflow skills</h3>
+            <p>Change how consequential work proceeds. Held back until risk justifies them.</p>
+            <div class="skill-list">
+              <span>formal-design</span><span>formal-planning</span><span>hard-debugging</span><span>code-review</span><span>skill-development</span>
+            </div>
+          </div>
+          <div class="skill-group domain">
+            <span class="skill-count">9</span>
+            <h3>Domain skills</h3>
+            <p>Produce one specialised output really well. This deck was built by one of them.</p>
+            <div class="skill-list">
+              <span>agent-env</span><span>architecture-analysis</span><span>cavecrew-ensemble</span><span>grill-me</span><span>handoff</span><span>prototype</span><span>triage</span><span>technical-html-presentations</span><span>worked-example-documentation</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 0.9rem">
+          <div class="flag">
+            <span class="flag-label">How selection works</span>
+            <p>A skill is a markdown file with a name and a description. The description <em>is</em> the trigger. Ask for a review and <span class="mono">code-review</span> loads itself; ask for a two-line fix and nothing loads at all.</p>
+          </div>
+          <div class="flag win">
+            <span class="flag-label">Why this beats a giant prompt</span>
+            <p>Instructions stay short, so they are actually followed. Expertise arrives only in the sessions that need it &mdash; no token cost and no ceremony the other 90% of the time.</p>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>&#10003; A skill is just a markdown file</span>
+          <span>&#10003; Add one in an afternoon</span>
+          <span>&#10003; Reviewed like code, in a repo</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Sources: opencode-skills.json, skills/*/SKILL.md</span><span>06 / 10</span></footer>
+      <aside class="speaker-notes">The mental model: skills are lazily-loaded expertise. Give a concrete example from your own week — asking for a stress test of a design pulls in grill-me, asking to hand off a session pulls in handoff. Stress the low barrier: writing a skill is writing a good markdown guide, and the whole inventory is only about 1,166 lines. This is the most obvious place for someone in the room to contribute something immediately useful to everyone.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--blue)" aria-label="Step 6: evaluating the skills">
+      <header class="slide-head"><span>Step 6 / Evidence</span><span>Prompt engineering with a test suite</span></header>
+      <div class="content">
+        <span class="eyebrow">tests/evaluate_skills.py</span>
+        <h2 class="wide">How do you know the skills actually help?</h2>
+        <div class="test-matrix">
+          <div class="test-box">
+            <span class="big-number">33</span>
+            <p><strong>Trigger cases.</strong> Did the right skill load &mdash; and, just as important, did nothing load when it should not? 13 cases exist purely to prove the agent stays out of the way.</p>
+          </div>
+          <div class="test-box">
+            <span class="big-number">17</span>
+            <p><strong>Outcome cases.</strong> Did the skill change the result? Each runs twice: once normally, once against a baseline with the skill removed. If the baseline already passed, the skill was not needed.</p>
+          </div>
+          <div class="test-box">
+            <span class="big-number">58</span>
+            <p><strong>Unit tests + validator.</strong> Schema checks, dead-link detection, and a rule that every core skill keeps at least 3 trigger and 3 outcome cases. Runs on every push.</p>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 0.9rem">
+          <div>
+            <pre class="code"><span class="dim"># adding a case is this small</span>
+{ "id": "agent-env-docker-quality-gates",
+  "prompt": "Run this application's Ruff,
+     pytest, and coverage gate in the
+     disposable Docker environment...",
+  "expected_skills": [<span class="hot">"agent-env"</span>],
+  "forbidden_skills": ["formal-design"] }</pre>
+          </div>
+          <div>
+            <div class="proof"><span>The whole point</span><strong>a skill only counts if it beat the baseline</strong></div>
+            <div class="flag win">
+              <span class="flag-label">The contribution loop</span>
+              <p>Skill did something silly in your session? Add a case describing what should have happened. It becomes a permanent regression test, and the next person never sees that behaviour. <strong>This is the easiest way to contribute.</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Sources: tests/evaluate_skills.py, tests/fixtures/, .github/workflows/test-skills.yml</span><span>07 / 10</span></footer>
+      <aside class="speaker-notes">This is what turns a folder of prompts into something maintainable. The A/B baseline is the key idea and worth dwelling on: without it you cannot tell a skill that works from a model that would have done the right thing anyway. Cases that pass without the skill are surfaced for review as evidence the skill may be redundant. Close on the contribution loop — a five-line JSON case is a genuinely welcome pull request and needs no knowledge of the harness.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--coral)" aria-label="Step 7: agent-env containerised verification">
+      <header class="slide-head"><span>Step 7 / Verification</span><span>Make the agent prove it</span></header>
+      <div class="content">
+        <span class="eyebrow">agent-env</span>
+        <h2 class="wide">It runs the real gates, and cannot touch your stack.</h2>
+        <div class="grid-2">
+          <div>
+            <pre class="code">agent-env doctor  .  <span class="dim"># check the host</span>
+agent-env prepare .  <span class="dim"># build + start, once</span>
+agent-env check   .  <span class="dim"># the full gates</span>
+agent-env exec    . -- pytest tests/test_x.py
+agent-env down    .  <span class="dim"># tear it all down</span>
+
+<span class="dim"># the gates it runs</span>
+uv run ruff check .
+uv run mypy .          <span class="dim"># where CI enables it</span>
+uv run pytest
+uv run coverage report --fail-under=<span class="hot">N</span></pre>
+            <p class="dek" style="margin-top: 0.7rem; font-size: 0.9rem">Install once per host:<br><span class="mono">uv tool install git+https://github.com/lkroon/agentic-dev-tools</span></p>
+          </div>
+          <div>
+            <ul class="checklist" style="--accent: var(--coral)">
+              <li><strong>Dedicated to your checkout.</strong> The Compose project name hashes the absolute path, so it can never land on your own running containers &mdash; or on another checkout of the same repo.</li>
+              <li><strong>No published ports, no renamed containers.</strong> Your <span class="mono">docker compose up</span> keeps working while the agent runs a full suite.</li>
+              <li><strong>Your <span class="mono">:latest</span> image survives</strong> &mdash; the build is retagged <span class="mono">:agent-env</span>.</li>
+              <li><strong>The agent cannot quietly weaken the gates</strong> &mdash; they are assembled by the launcher, outside the repository.</li>
+              <li><strong>Honest reporting is enforced:</strong> if pytest fails, coverage is reported as unknown, never as passing.</li>
+              <li><strong>Disposable database</strong>, deleted on teardown. Nothing shared, nothing staging.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="payoff">
+          <span>&#10003; No more "it works on my machine" from your agent</span>
+          <span>&#10003; No host pollution</span>
+          <span>&#10003; Same gates for everyone</span>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Sources: skills/agent-env/SKILL.md, agentic-dev-tools/</span><span>08 / 10</span></footer>
+      <aside class="speaker-notes">The pitch: an agent that says "done" is worthless; an agent that says "ruff clean, 412 tests passed, coverage gate passed, exit 0" is a colleague. The collision-avoidance detail lands well with anyone who has had a stray container eat their port 5432. Be precise on the coverage threshold — the launcher applies a fixed value today and confirming it against the reusable CI workflow is on the gaps slide. Demo agent-env doctor if there is time; it prints every derived value and the file it came from.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--coral)" aria-label="Known gaps">
+      <header class="slide-head"><span>09 / Gaps</span><span>Where the work is</span></header>
+      <div class="content">
+        <span class="eyebrow">Honest status</span>
+        <h2 class="wide">What is not finished yet.</h2>
+        <div class="loop">
+          <div class="loop-step">
+            <h3>The fleet rollout</h3>
+            <p>The contract lives on an unmerged branch; <span class="mono">origin/main</span> of the template does not carry it yet, so most apps have no <span class="mono">AGENTS.md</span>.</p>
+            <span class="tag">blocks: steps 4 at fleet scale</span>
+          </div>
+          <div class="loop-step">
+            <h3>App-specific docs have nowhere to go</h3>
+            <p>The sync merges with <span class="mono">-X theirs</span>, so anything an app adds to <span class="mono">AGENTS.md</span> is overwritten on the next sync &mdash; silently, with no conflict.</p>
+            <span class="tag">blocks: per-app instructions</span>
+          </div>
+          <div class="loop-step">
+            <h3>Setup is not reproducible</h3>
+            <p>My config is hand-maintained absolute paths. The skill manifest lists 14 entries; my config lists 13. Nothing keeps them in step.</p>
+            <span class="tag">blocks: everyone but me</span>
+          </div>
+          <div class="loop-step">
+            <h3><span class="mono">agent-env</span> is isolation, not security</h3>
+            <p>It stops collisions, not exfiltration: no network egress limits, and the build token persists in the image. Its own <span class="mono">audit</span> command measures this and currently fails.</p>
+            <span class="tag">blocks: running untrusted code</span>
+          </div>
+          <div class="loop-step">
+            <h3>The coverage gate is assumed</h3>
+            <p>The launcher hardcodes a threshold rather than reading it from the reusable CI workflow. If the real number differs, results mislead in both directions.</p>
+            <span class="tag">blocks: claiming CI parity</span>
+          </div>
+          <div class="loop-step">
+            <h3>Evals run on request only</h3>
+            <p>The model-backed suites cost tokens, so they are manual. Regressions can land unnoticed. Version drift between my host and CI does not help.</p>
+            <span class="tag">blocks: trusting the skills long-term</span>
+          </div>
+        </div>
+        <div class="flag warn">
+          <span class="flag-label">The real bottleneck</span>
+          <p>It is not the number of skills &mdash; fourteen is plenty. It is that none of this is reproducible by a second developer yet, which caps the whole thing at one person no matter how good it gets. That is a solvable problem, and it is the most valuable thing anyone here could pick up.</p>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Verified against: origin/main, sync.py, opencode.jsonc, discovery.py, agentic-dev-tools/README.md</span><span>09 / 10</span></footer>
+      <aside class="speaker-notes">Say plainly that this slide exists so nobody adopts the setup on a wrong premise and gets burned. None of these are reasons to wait — steps 1 to 3 are unaffected by every gap listed here. Gap two is the one with a design consequence: because the sync always prefers the template, app-specific instructions need their own file rather than a section in AGENTS.md. Gap four matters if anyone plans to point this at untrusted dependencies; it is a collision boundary, not a security boundary.</aside>
+    </section>
+
+    <section class="slide" style="--accent: var(--acid)" aria-label="Recommendations and how to help">
+      <header class="slide-head"><span>10 / Recommendations</span><span>Pick one</span></header>
+      <div class="content closing">
+        <div>
+          <span class="eyebrow hot">Where this goes next</span>
+          <h2 class="wide">The best version of this is not mine.</h2>
+          <p class="dek">Every piece is a text file in a repository &mdash; reviewable, testable, and improvable by anyone. The fastest way to make agentic development good here is for five people to use it and complain loudly.</p>
+          <div class="delta-line">
+            <span class="pill acid">Start at step 1 today</span>
+            <span class="pill blue">Steps 1&ndash;3 need no team decision</span>
+          </div>
+        </div>
+        <ol class="takeaway-list">
+          <li><strong>01</strong><span><strong>Try steps 1&ndash;3 this week.</strong> Fifteen minutes. Then tell me what annoyed you &mdash; that feedback is worth more than another skill.</span></li>
+          <li><strong>02</strong><span><strong>Land the fleet contract</strong> and adopt a layered split: the template owns <span class="mono">AGENTS.md</span>, each app owns a file the sync never touches.</span></li>
+          <li><strong>03</strong><span><strong>Write the bootstrap script.</strong> Generate the config from the manifest so setup is one command. Highest-value first contribution, roughly a day.</span></li>
+          <li><strong>04</strong><span><strong>Add an eval case whenever a skill misbehaves.</strong> Five lines of JSON, permanent regression cover, no harness knowledge needed.</span></li>
+          <li><strong>05</strong><span><strong>Decide <span class="mono">agent-env</span>'s status</strong> &mdash; team-standard verification or labelled pilot &mdash; and confirm the coverage threshold against CI.</span></li>
+          <li><strong>06</strong><span><strong>Bring your repo's hard-won lessons.</strong> If something has bitten you twice, it belongs in an <span class="mono">AGENTS.md</span>, not in your head.</span></li>
+        </ol>
+      </div>
+      <footer class="slide-foot"><span>Repos: personal-skills, agentic-dev-tools, template-pyramid-app</span><span>10 / 10</span></footer>
+      <aside class="speaker-notes">Close on invitation, not instruction. Make item one genuinely easy — offer to sit with anyone for fifteen minutes and get them to a working setup. Items two to five are the team-scale work and each has a natural owner in the room; item three is the one most likely to stall because it helps everyone and belongs to nobody, so ask for a volunteer explicitly. End on item six: the system is only as good as the lessons people put into it, and everyone here already has several.</aside>
+    </section>
+
+  </main>
+
+  <div class="help" aria-hidden="true">Arrow keys / swipe</div>
+  <nav class="controls" aria-label="Slide navigation">
+    <button class="nav-button" id="prev" type="button" aria-label="Previous slide">&lt;</button>
+    <span class="counter" aria-label="Current slide">1 / 10</span>
+    <button class="nav-button" id="next" type="button" aria-label="Next slide">&gt;</button>
+  </nav>
+  <div class="progress-rail" aria-hidden="true"><div class="progress"></div></div>
+
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const counter = document.querySelector('.counter');
+      const progress = document.querySelector('.progress');
+      const previous = document.getElementById('prev');
+      const next = document.getElementById('next');
+      let current = 0;
+      let touchStart = null;
+
+      function show(index) {
+        current = Math.max(0, Math.min(index, slides.length - 1));
+        slides.forEach((slide, position) => {
+          const active = position === current;
+          slide.classList.toggle('active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+        });
+        counter.textContent = `${current + 1} / ${slides.length}`;
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+        previous.disabled = current === 0;
+        next.disabled = current === slides.length - 1;
+        history.replaceState(null, '', `#${current + 1}`);
+      }
+
+      previous.addEventListener('click', () => show(current - 1));
+      next.addEventListener('click', () => show(current + 1));
+      document.addEventListener('keydown', (event) => {
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+          event.preventDefault();
+          show(current + 1);
+        }
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+          event.preventDefault();
+          show(current - 1);
+        }
+        if (event.key === 'Home') show(0);
+        if (event.key === 'End') show(slides.length - 1);
+      });
+      document.addEventListener('touchstart', (event) => {
+        touchStart = event.changedTouches[0].clientX;
+      }, { passive: true });
+      document.addEventListener('touchend', (event) => {
+        if (touchStart === null) return;
+        const delta = event.changedTouches[0].clientX - touchStart;
+        if (Math.abs(delta) > 50) show(current + (delta < 0 ? 1 : -1));
+        touchStart = null;
+      }, { passive: true });
+
+      const requested = Number.parseInt(location.hash.slice(1), 10);
+      show(Number.isFinite(requested) ? requested - 1 : 0);
+    })();
+  </script>
+</body>
+</html>
